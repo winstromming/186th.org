@@ -24,35 +24,21 @@
     <header>
       <a href="#">186th Squadron</a>
     </header>
-    <main>
-      <p>Main</p>
-      <script type="text/javascript">
-        var url = "https://cors.io/?https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv";
-        var data = fetch(url, {
-          method: 'GET',
-          mode: 'cors',
-        }).then(function (response) {
-          return response.text()
-        }).then(function (data) {
-          console.log('data', data)
-        }).catch(function (error) {
-          console.log('error', error);
-        });
-      </script>
-    </main>
-    <footer>
-      <p>Footer</p>
-    </footer>
-    <hr />
-    <div id="app">
-      <ol>
+    <main id="app">
+      <div v-if="items.length ===0">
+        <p>Loading...</p>
+      </div>
+      <ol v-if="items.length > 0">
         <li v-for="item in items">
           <div v-for="(value, label) in item">
             {{ label }}: {{ value }}
           </div>
         </li>
       </ol>
-    </div>
+    </main>
+    <footer>
+      <p>Footer</p>
+    </footer>
     <script>
       var app = new Vue({
         el: '#app',
@@ -61,7 +47,7 @@
         },
         created: function() {
           var self = this;
-          fetch("https://cors.io/?https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv", {
+          fetch("https://spreadsheets.google.com/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv", {
             method: 'GET',
             mode: 'cors',
           }).then(function (response) {
