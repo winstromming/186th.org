@@ -27,7 +27,7 @@
     <main>
       <p>Main</p>
       <script type="text/javascript">
-        var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv";
+        var url = "https://cors.io/?https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv";
         var data = fetch(url, {
           method: 'GET',
           mode: 'cors',
@@ -61,7 +61,7 @@
         },
         created: function() {
           var self = this;
-          fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv", {
+          fetch("https://cors.io/?https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv", {
             method: 'GET',
             mode: 'cors',
           }).then(function (response) {
