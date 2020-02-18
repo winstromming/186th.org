@@ -1,0 +1,139 @@
+body {
+  background: #eee;
+  font-size: 15px;
+  font-family: "Fira Sans", sans-serif;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+}
+
+#main {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+#left {
+  flex: 1;
+  padding: 20px;
+  min-width: 280px;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#right {
+  flex-grow: 1;
+  padding: 20px;
+  min-width: 350px;
+}
+
+header {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+}
+.gutter {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  padding: 40px 0;
+  width: 280px;
+  border-radius: 0 0 20px 20px;
+  background: #022742;
+  margin: 0;
+  margin-left: 20px;
+  margin-right: auto;
+  position: relative;
+}
+h1 img {
+  display: block;
+  margin: 0 auto;
+}
+h2 {
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "Overpass", sans-serif;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+  color: #022742;
+  border-bottom: 1px solid #ccc;
+}
+p, ul {
+  margin: 0 0 20px;
+}
+
+.items, .item {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none outside;
+}
+.item {
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0, 0.1);
+}
+.item + .item {
+  margin-top: 10px;
+}
+.item-heading {
+  font-weight: bold;
+  font-family: "Fira Sans", sans-serif;
+  line-height: 20px;
+}
+.item-text {
+  line-height: 20px;
+}
+.item-link {
+  text-decoration: none;
+}
+.item-link:hover,
+.item-link:focus {
+  color: #FFAA00 !important;
+}
+.item-date {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: #666;
+}
+.item-group {
+  margin-top: 20px;
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-bottom: -20px;
+  padding: 9px 20px 10px;
+  border-top: 1px solid #ddd;
+  border-radius: 0 0 5px 5px;
+  background: #f8f8f8;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /* overflow: hidden; */
+}
+.item-group .item-text {
+  white-space: nowrap;
+  font-size: 13px;
+  color: #333;
+}
+.item-points { min-width: 80px; }
+.item-players { min-width: 60px; }
+.item-notes {
+  max-width: 200px;
+  margin-right: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.item-link { margin-left: auto; }

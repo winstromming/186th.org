@@ -17,48 +17,119 @@
     <style>
 
     </style> -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-    <script src="https://unpkg.com/papaparse@5.1.1/papaparse.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Fira+Sans|Overpass" />
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
   </head>
   <body>
     <header>
-      <a href="#">186th Squadron</a>
-    </header>
-    <main id="app">
-      <div v-if="items.length ===0">
-        <p>Loading...</p>
+      <div class="gutter">
+        <h1>
+          <img alt="186th Squadron" width="200" src="assets/img/logo-gradient.png" />
+        </h1>
       </div>
-      <ol v-if="items.length > 0">
-        <li v-for="item in items">
-          <div v-for="(value, label) in item">
-            {{ label }}: {{ value }}
-          </div>
-        </li>
-      </ol>
+    </header>
+    <main id="main" class="gutter">
+      <div id="left">
+        <div class="block">
+          <p>Founded in 2015, <b>186th Squadron</b> is the UK's oldest and largest organised group of X-Wing tournament players. We're based primarily around the London area (and little bit wider).</p>
+        </div>
+      </div>
+      <div id="right">
+        <div v-if="status">
+          <p>{{ status }}</p>
+        </div>
+        <ol class="items" v-if="items.length">
+          <li class="item" v-for="item in items">
+            <div class="item-date">
+              {{ item['Date'] }}
+            </div>
+            <div class="item-heading">
+              {{ item['Tournament'] }}
+            </div>
+            <div class="item-place">
+              {{ item['Country'] ? item['Country'] : "Location TBC" }}
+            </div>
+            <div class="item-group">
+              <div class="item-text item-points">
+                <i class="feather icon-server"></i> {{ item['Points limit'] && parseInt(item['Points limit'], 10) ? item['Points limit'] + "pts" : "??? pts" }}
+              </div>
+              <div class="item-text item-players">
+                <i class="feather icon-users"></i> {{ item['Players'] && parseInt(item['Players'], 10) ? item['Players'] : "???" }}
+              </div>
+              <div class="item-text item-notes" v-if="item['Notes']">
+                <i class="feather icon-clipboard"></i> <span>{{ item['Notes'].charAt(0).toUpperCase() + item['Notes'].substring(1) }}</span>
+              </div>
+              <a class="item-text item-link" v-if="item['Link']" v-bind:href="item['Link']">
+                <i class="feather icon-link"></i> Link
+              </a>
+            </div>
+          </li>
+          <!-- <li class="item" v-for="item in items">
+            <div class="item-heading">
+              {{ item['Tournament'] }}
+            </div>
+            <a class="item-link" v-if="item['Link']" v-bind:href="item['Link']">
+              <i class="feather icon-link"></i>
+            </a>
+            <div class="item-text" v-if="item['Date']">
+              <i class="feather icon-calendar"></i> {{ item['Date'] }}
+            </div>
+            <div class="item-text" v-if="item['Country']">
+              <i class="feather icon-map-pin"></i> {{ item['Country'] }}
+            </div>
+            <div class="item-group">
+              <div class="item-text item-notes" v-if="item['Notes']">
+                <i class="feather icon-clipboard"></i> {{ item['Notes'].toLowerCase() }}
+              </div>
+              <div class="item-text item-points">
+                <i class="feather icon-server"></i> {{ item['Points limit'] ? item['Points limit'].toLowerCase() : "???" }}pts
+              </div>
+              <div class="item-text item-players">
+                <i class="feather icon-users"></i> {{ item['Players'] ? item['Players'].toLowerCase() : "???" }}
+              </div>
+            </div>
+          </li> -->
+        </ol>
+      </div>
     </main>
     <footer>
       <p>Footer</p>
     </footer>
+    <script src="assets/js/vue.min.js"></script>
+    <script src="assets/js/papa.min.js"></script>
     <script>
-      var app = new Vue({
-        el: '#app',
+
+      var sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv";
+      var main = new Vue({
+        el: "#main",
         data: {
+          status: "Loading",
           items: [],
         },
+        methods: {
+          fetch_text: function (response) {
+            return response.text()
+          },
+          fetch_parse: function (data) {
+            var parsed = Papa.parse(data, { header: true });
+            this.items = parsed.data;
+            this.status = null;
+          },
+          fetch_error: function (error) {
+            this.status = "Could not load"
+          }
+        },
         created: function() {
-          var self = this;
-          fetch("https://spreadsheets.google.com/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv", {
+          this.status = "Loading...";
+          fetch(sheet, {
             method: 'GET',
             mode: 'cors',
-          }).then(function (response) {
-            return response.text()
-          }).then(function (data) {
-            console.log('results', data);
-            var parsed = Papa.parse(data, { header: true });
-            self.items = parsed.data;
-          }).catch(function (error) {
-            console.log('error', error);
-          });
+          })
+          .then(this.fetch_text)
+          .then(this.fetch_parse)
+          .catch(this.fetch_error);
         }
       })
     </script>
