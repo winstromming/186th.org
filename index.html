@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <title>186th Squadron</title>
+    <!-- <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="186,186th,squadron,x-wing,xwing,miniatures">
+    <meta name="description" content="Home of the 186th Squadron">
+    <meta name="google-site-verification" content="uRWrtph1LIakh3nSxOS6mJmF57b2MVLis95StmA0DtQ" />
+    <meta property="og:title" content="186th Squadron" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://186th.org/" />
+    <meta property="og:description" content="A summary of X-Wing tournaments all around the UK and a little wider" />
+    <meta property="og:image" content="http://www.186th.org/assets/img/logo-dark-large.png" />
+    <link rel="canonical" href="http://www.186th.org/" />
+    <style>
+
+    </style> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/papaparse@5.1.1/papaparse.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="#">186th Squadron</a>
+    </header>
+    <main>
+      <p>Main</p>
+      <script type="text/javascript">
+        var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv";
+        var data = fetch(url, {
+          method: 'GET',
+          mode: 'cors',
+        }).then(function (response) {
+          return response.text()
+        }).then(function (data) {
+          console.log('data', data)
+        }).catch(function (error) {
+          console.log('error', error);
+        });
+      </script>
+    </main>
+    <footer>
+      <p>Footer</p>
+    </footer>
+    <hr />
+    <div id="app">
+      <ol>
+        <li v-for="item in items">
+          <div v-for="(value, label) in item">
+            {{ label }}: {{ value }}
+          </div>
+        </li>
+      </ol>
+    </div>
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+          items: [],
+        },
+        created: function() {
+          var self = this;
+          fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv", {
+            method: 'GET',
+            mode: 'cors',
+          }).then(function (response) {
+            return response.text()
+          }).then(function (data) {
+            console.log('results', data);
+            var parsed = Papa.parse(data, { header: true });
+            self.items = parsed.data;
+          }).catch(function (error) {
+            console.log('error', error);
+          });
+        }
+      })
+    </script>
+  </body>
+</html>
