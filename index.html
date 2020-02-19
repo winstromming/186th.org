@@ -13,44 +13,40 @@
     <meta property="og:url" content="http://186th.org/" />
     <meta property="og:description" content="A summary of X-Wing tournaments all around the UK and a little wider" />
     <meta property="og:image" content="http://www.186th.org/assets/img/logo-dark-large.png" />
-    <link rel="canonical" href="http://www.186th.org/" />
-    <style>
-
-    </style> -->
+    <link rel="canonical" href="http://www.186th.org/" /> -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Fira+Sans|Overpass" />
     <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css" />
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
   </head>
   <body>
-    <header>
-      <div class="gutter">
-        <h1>
-          <img alt="186th Squadron" width="200" src="assets/img/logo-gradient.png" />
+    <main id="main">
+      <header>
+        <h1 class="logo">
+          <div class="tab">
+            <img alt="186th Squadron" width="200" src="assets/img/logo-gradient.png" />
+          </div>
         </h1>
-      </div>
-    </header>
-    <main id="main" class="gutter">
-      <div id="left">
         <div class="block">
-          <p>Founded in 2015, <b>186th Squadron</b> is the UK's oldest and largest organised group of X-Wing tournament players. We're based primarily around the London area (and little bit wider).</p>
+          <p>
+            <b>Who are you?</b><br />
+            Founded in 2015, <u>186th Squadron</u> is the UK's oldest and largest organised group of X-Wing tournament players. We're based primarily around the London area (and little bit wider).
+          </p>
+          <input type="text" placeholder="Search..." v-model="search" v-on:keyup="filter_results" />
         </div>
-      </div>
-      <div id="right">
+      </header>
+      <section>
         <div v-if="status">
           <p>{{ status }}</p>
         </div>
+        <div v-if="search.length > 0">
+          <p>{{ items.length }} results for "{{ search }}"</p>
+        </div>
         <ol class="items" v-if="items.length">
           <li class="item" v-for="item in items">
-            <div class="item-date">
-              {{ item['Date'] }}
-            </div>
-            <div class="item-heading">
-              {{ item['Tournament'] }}
-            </div>
-            <div class="item-place">
-              {{ item['Country'] ? item['Country'] : "Location TBC" }}
-            </div>
+            <div class="item-date">{{ item['Date'] }}</div>
+            <div class="item-heading">{{ item['Tournament'] }}</div>
+            <div class="item-place">{{ item['Country'] ? item['Country'] : "Location TBC" }}</div>
             <div class="item-group">
               <div class="item-text item-points">
                 <i class="feather icon-server"></i> {{ item['Points limit'] && parseInt(item['Points limit'], 10) ? item['Points limit'] + "pts" : "??? pts" }}
@@ -66,33 +62,8 @@
               </a>
             </div>
           </li>
-          <!-- <li class="item" v-for="item in items">
-            <div class="item-heading">
-              {{ item['Tournament'] }}
-            </div>
-            <a class="item-link" v-if="item['Link']" v-bind:href="item['Link']">
-              <i class="feather icon-link"></i>
-            </a>
-            <div class="item-text" v-if="item['Date']">
-              <i class="feather icon-calendar"></i> {{ item['Date'] }}
-            </div>
-            <div class="item-text" v-if="item['Country']">
-              <i class="feather icon-map-pin"></i> {{ item['Country'] }}
-            </div>
-            <div class="item-group">
-              <div class="item-text item-notes" v-if="item['Notes']">
-                <i class="feather icon-clipboard"></i> {{ item['Notes'].toLowerCase() }}
-              </div>
-              <div class="item-text item-points">
-                <i class="feather icon-server"></i> {{ item['Points limit'] ? item['Points limit'].toLowerCase() : "???" }}pts
-              </div>
-              <div class="item-text item-players">
-                <i class="feather icon-users"></i> {{ item['Players'] ? item['Players'].toLowerCase() : "???" }}
-              </div>
-            </div>
-          </li> -->
         </ol>
-      </div>
+      </section>
     </main>
     <footer>
       <p>Footer</p>
@@ -105,8 +76,10 @@
       var main = new Vue({
         el: "#main",
         data: {
+          search: "",
           status: "Loading",
-          items: [],
+          source: [],
+          items: []
         },
         methods: {
           fetch_text: function (response) {
@@ -114,11 +87,27 @@
           },
           fetch_parse: function (data) {
             var parsed = Papa.parse(data, { header: true });
+            this.source = parsed.data;
             this.items = parsed.data;
             this.status = null;
           },
           fetch_error: function (error) {
             this.status = "Could not load"
+          },
+          filter_results: function (key) {
+            var term = this.search.toLowerCase();
+            var results = this.source.filter(function (item) {
+              var copy = Object.assign({}, item);
+              copy['Players'] = "";
+              copy['Link'] = "";
+              var text = JSON.stringify(Object.values(copy));
+              return text.toLowerCase().indexOf(term) !== -1;
+            });
+            if (term === "") {
+              this.items = this.source;
+            } else {
+              this.items = results;
+            }
           }
         },
         created: function() {
