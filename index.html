@@ -25,7 +25,7 @@
         <div class="gutter">
           <div class="layout-left">
             <h1 class="logo">
-              <img alt="186th Squadron" width="200" src="assets/img/logo-gradient.png" />
+              <img alt="186th Squadron" width="200" src="assets/img/logo-gradient-shadow.png" />
             </h1>
           </div>
           <div class="layout-right">
@@ -74,19 +74,13 @@
               <div class="item-content">
                 <div class="item-date">{{ item['Date'] }}</div>
                 <div class="item-about">
-                  <div class="item-heading">{{ item['Tournament'] }}</div>
-                  <div class="item-place">{{ item['Country'] ? item['Country'] : "Location TBC" }}</div>
+                  <div class="item-heading">{{ item['Event'] }}</div>
+                  <div class="item-place">{{ item['Location'] ? item['Location'] : "Location to be confirmed" }}</div>
                 </div>
               </div>
               <div class="item-group">
-                <div class="item-text item-points">
-                  <i class="feather icon-server"></i> {{ item['Points limit'] && parseInt(item['Points limit'], 10) ? item['Points limit'] + "pts" : "??? pts" }}
-                </div>
-                <div class="item-text item-players">
-                  <i class="feather icon-users"></i> {{ item['Players'] && parseInt(item['Players'], 10) ? item['Players'] : "???" }}
-                </div>
-                <div class="item-text item-notes" v-if="item['Notes']">
-                  <i class="feather icon-clipboard"></i> <span>{{ item['Notes'].charAt(0).toUpperCase() + item['Notes'].substring(1) }}</span>
+                <div class="item-text item-format">
+                  <i class="feather icon-server"></i> {{ item['Format'] || "Unknown format" }}
                 </div>
                 <a class="item-text item-link" v-if="item['Link']" v-bind:href="item['Link']">
                   <i class="feather icon-link"></i> Link
@@ -100,8 +94,7 @@
     <script src="assets/js/vue.min.js"></script>
     <script src="assets/js/papa.min.js"></script>
     <script>
-      // "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv";
-      var sheet = "https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vSrvepGDK_l2l4h1799wjNwd0xITdKBMPxeu7ph7dZ5lGpXJf1Mw0o81KkeBdrZ9rXAGLLevEazkvWV/pub?output=csv";
+      var sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSDvME138hWbV5ST_3SKKUtSIcwQxdbFS6ED6lBJOkMZyzMoR06BOmcy5ftWPFjT5DiNATirl4HJfNc/pub?output=csv";
       var main = new Vue({
         el: "#main",
         data: {
@@ -129,7 +122,6 @@
             var term = this.search.toLowerCase();
             var results = this.source.filter(function (item) {
               var copy = Object.assign({}, item);
-              copy['Players'] = "";
               copy['Link'] = "";
               var text = JSON.stringify(Object.values(copy));
               return text.toLowerCase().indexOf(term) !== -1;
