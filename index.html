@@ -3,18 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <title>186th Squadron</title>
-    <!-- <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="186,186th,squadron,x-wing,xwing,miniatures">
-    <meta name="description" content="Home of the 186th Squadron">
-    <meta name="google-site-verification" content="uRWrtph1LIakh3nSxOS6mJmF57b2MVLis95StmA0DtQ" />
-    <meta property="og:title" content="186th Squadron" />
+    <meta name="keywords" content="186,186th,squadron,x-wing,xwing,miniatures,tournaments,events">
+    <meta name="description" content="Listing of X-Wing tournaments and events from around the United Kingdom">
+    <!-- <meta name="google-site-verification" content="uRWrtph1LIakh3nSxOS6mJmF57b2MVLis95StmA0DtQ" /> -->
+    <!-- <meta property="og:title" content="186th Squadron" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="http://186th.org/" />
     <meta property="og:description" content="A summary of X-Wing tournaments all around the UK and a little wider" />
-    <meta property="og:image" content="http://www.186th.org/assets/img/logo-dark-large.png" />
-    <link rel="canonical" href="http://www.186th.org/" /> -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Fira+Sans|Overpass" />
+    <meta property="og:image" content="http://www.186th.org/assets/img/logo-dark-large.png" /> -->
+    <!-- <link rel="canonical" href="http://www.186th.org/" /> -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Fira+Sans" />
     <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css" />
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
@@ -22,62 +22,91 @@
   <body>
     <main id="main">
       <header>
-        <h1 class="logo">
-          <div class="tab">
-            <img alt="186th Squadron" width="200" src="assets/img/logo-gradient.png" />
+        <div class="gutter">
+          <div class="layout-left">
+            <h1 class="logo">
+              <img alt="186th Squadron" width="200" src="assets/img/logo-gradient.png" />
+            </h1>
           </div>
-        </h1>
-        <div class="block">
-          <p>
-            <b>Who are you?</b><br />
-            Founded in 2015, <u>186th Squadron</u> is the UK's oldest and largest organised group of X-Wing tournament players. We're based primarily around the London area (and little bit wider).
-          </p>
-          <input type="text" placeholder="Search..." v-model="search" v-on:keyup="filter_results" />
+          <div class="layout-right">
+            <div class="search">
+              <i class="feather icon-search"></i>
+              <input class="search" type="text" placeholder="Search tournament list&hellip;" v-model="search" v-on:keyup="filter_results" />
+            </div>
+          </div>
         </div>
       </header>
       <section>
-        <div v-if="status">
-          <p>{{ status }}</p>
-        </div>
-        <div v-if="search.length > 0">
-          <p>{{ items.length }} results for "{{ search }}"</p>
-        </div>
-        <ol class="items" v-if="items.length">
-          <li class="item" v-for="item in items">
-            <div class="item-date">{{ item['Date'] }}</div>
-            <div class="item-heading">{{ item['Tournament'] }}</div>
-            <div class="item-place">{{ item['Country'] ? item['Country'] : "Location TBC" }}</div>
-            <div class="item-group">
-              <div class="item-text item-points">
-                <i class="feather icon-server"></i> {{ item['Points limit'] && parseInt(item['Points limit'], 10) ? item['Points limit'] + "pts" : "??? pts" }}
-              </div>
-              <div class="item-text item-players">
-                <i class="feather icon-users"></i> {{ item['Players'] && parseInt(item['Players'], 10) ? item['Players'] : "???" }}
-              </div>
-              <div class="item-text item-notes" v-if="item['Notes']">
-                <i class="feather icon-clipboard"></i> <span>{{ item['Notes'].charAt(0).toUpperCase() + item['Notes'].substring(1) }}</span>
-              </div>
-              <a class="item-text item-link" v-if="item['Link']" v-bind:href="item['Link']">
-                <i class="feather icon-link"></i> Link
-              </a>
+        <div class="gutter">
+          <div class="layout-left">
+            <div class="block">
+              <h3>Who are you?</h3>
+              <p>Founded in 2015, <b>186th Squadron</b> is the UK's oldest and largest organised group of X-Wing tournament players. We're based primarily around the London area (and little bit wider).</p>
             </div>
-          </li>
-        </ol>
+            <div class="block">
+              <h3>Tournaments</h3>
+              <p>We manage and provide an open list of tournaments and events around the country, right here.</p>
+            </div>
+            <div class="block">
+              <h3>Podcast</h3>
+              <p>We release episodes (roughly) every two weeks on our award-winning podcast. Find us at the usual places.</p>
+            </div>
+          </div>
+          <div class="layout-right">
+            <div class="loading" v-if="status === 'loading'">
+              <p>Loading</p>
+            </div>
+            <div class="error" v-if="status === 'error'">
+              <p>
+                <b>That's not how the Force works!</b><br />{{ error }}
+              </p>
+            </div>
+            <div class="heading" v-if="status === 'done' && search.length === 0">
+              <p>Found {{ items.length }} {{ items.length === 1 ? "tournament" : "tournaments" }}</p>
+            </div>
+            <div class="heading" v-if="status === 'done' && search.length > 0">
+              <p><span>"{{ search }}"</span> Found {{ items.length }} {{ items.length === 1 ? "tournament" : "tournaments" }}</p>
+            </div>
+            <div class="error" v-if="status === 'done' && search.length > 0 && items.length === 0">
+              <p>Not the droids you're looking for?</p>
+            </div>
+            <div class="item" v-for="item in items">
+              <div class="item-content">
+                <div class="item-date">{{ item['Date'] }}</div>
+                <div class="item-about">
+                  <div class="item-heading">{{ item['Tournament'] }}</div>
+                  <div class="item-place">{{ item['Country'] ? item['Country'] : "Location TBC" }}</div>
+                </div>
+              </div>
+              <div class="item-group">
+                <div class="item-text item-points">
+                  <i class="feather icon-server"></i> {{ item['Points limit'] && parseInt(item['Points limit'], 10) ? item['Points limit'] + "pts" : "??? pts" }}
+                </div>
+                <div class="item-text item-players">
+                  <i class="feather icon-users"></i> {{ item['Players'] && parseInt(item['Players'], 10) ? item['Players'] : "???" }}
+                </div>
+                <div class="item-text item-notes" v-if="item['Notes']">
+                  <i class="feather icon-clipboard"></i> <span>{{ item['Notes'].charAt(0).toUpperCase() + item['Notes'].substring(1) }}</span>
+                </div>
+                <a class="item-text item-link" v-if="item['Link']" v-bind:href="item['Link']">
+                  <i class="feather icon-link"></i> Link
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
-    <footer>
-      <p>Footer</p>
-    </footer>
     <script src="assets/js/vue.min.js"></script>
     <script src="assets/js/papa.min.js"></script>
     <script>
-
       var sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCnlCP3ji1Pzas6J7wYdZP5JL9wjQYBrPpRvZrTb5sZoHpvLwky1TrUvDlCQCJTHmtEqRWAh3KXrY7/pub?output=csv";
       var main = new Vue({
         el: "#main",
         data: {
           search: "",
-          status: "Loading",
+          status: "loading",
+          error: "",
           source: [],
           items: []
         },
@@ -89,10 +118,11 @@
             var parsed = Papa.parse(data, { header: true });
             this.source = parsed.data;
             this.items = parsed.data;
-            this.status = null;
+            this.status = "done";
           },
           fetch_error: function (error) {
-            this.status = "Could not load"
+            this.status = "error";
+            this.error = "Sorry. There was a problem fetching the tournament data.";
           },
           filter_results: function (key) {
             var term = this.search.toLowerCase();
@@ -111,7 +141,6 @@
           }
         },
         created: function() {
-          this.status = "Loading...";
           fetch(sheet, {
             method: 'GET',
             mode: 'cors',
